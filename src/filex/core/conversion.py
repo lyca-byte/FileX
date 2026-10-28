@@ -17,6 +17,7 @@ def convert_file(
     target_format: str,
     output_path: Path | None = None,
     output_dir: Path | None = None,
+    mode: str = "editable",
 ) -> Path:
     """Validate, route, and execute a file conversion."""
     source_format = validate_input(input_path)
@@ -35,7 +36,26 @@ def convert_file(
         output_dir=output_dir,
     )
 
+    # converter = get_converter(source_format, target_format)
+    # converter.convert(input_path, result_path, target_format)
+    
     converter = get_converter(source_format, target_format)
-    converter.convert(input_path, result_path, target_format)
+
+    if (
+        normalize_format(source_format) == "pdf"
+        and target_format == "docx"
+    ):
+        converter.convert(
+            input_path,
+            result_path,
+            target_format,
+            mode=mode,
+        )
+    else:
+        converter.convert(
+            input_path,
+            result_path,
+            target_format,
+        )
 
     return result_path

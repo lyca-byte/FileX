@@ -47,6 +47,17 @@ def build_parser() -> argparse.ArgumentParser:
         version=f"%(prog)s {__version__}",
     )
 
+    parser.add_argument(
+        "--mode",
+        choices=["editable", "visual"],
+        default="editable",
+        help=(
+            "PDF-to-DOCX conversion mode: "
+            "'editable' for editable text (default), "
+            "'visual' for PDF pages embedded as images."
+        ),
+    )
+
     return parser
 
 
@@ -57,12 +68,13 @@ def run(args: argparse.Namespace) -> int:
 
     if args.target_format is None:
         raise FileXError("Missing required argument: --to")
-
+    
     result = convert_file(
         input_path=args.file,
         target_format=args.target_format,
         output_path=args.output,
         output_dir=args.output_dir,
+        mode=args.mode,
     )
 
     print(f"Conversion successful: {result}")

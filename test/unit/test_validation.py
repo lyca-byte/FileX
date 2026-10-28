@@ -1,3 +1,4 @@
+
 """Tests for input and format validation."""
 
 import pytest
@@ -22,7 +23,7 @@ def test_reject_missing_file(tmp_path):
 
 
 def test_reject_unsupported_input_format(tmp_path):
-    path = tmp_path / "document.docx"
+    path = tmp_path / "document.txt"
     path.write_bytes(b"test")
 
     with pytest.raises(FileXError, match="Unsupported input format"):
@@ -35,7 +36,8 @@ def test_normalize_jpeg_target():
 
 def test_reject_unsupported_target():
     with pytest.raises(FileXError, match="Unsupported target format"):
-        validate_target_format("pdf")
+        validate_target_format("txt")
+
 
 def test_validate_docx_input(tmp_path):
     path = tmp_path / "document.docx"
