@@ -1,82 +1,53 @@
-
 # FileX
 
-Offline multi-format file converter built with Python.
+Offline multi-format file converter built with Python. FileX processes files locally instead of uploading them to online conversion services.
 
-FileX is a command-line tool designed to convert supported file formats locally without uploading files to online conversion services.
+## Supported formats
 
-## Features
+- Images: PNG, JPG/JPEG, WebP
+- Documents: DOCX, PDF, ODT, RTF, TXT
 
-- CLI-only interface
-- Local file processing
-- Command-line argument parsing
-- Input validation
-- Modular conversion architecture (in development)
+Document conversions are attempted through LibreOffice. A format pair is available when the installed LibreOffice version supports importing the source and exporting the requested target. PDF-to-DOCX has a dedicated `pdf2docx` editable mode and a visual mode that embeds rendered PDF pages as images.
 
 ## Requirements
 
-- Python 3.11 or newer
+- Python 3.10 or newer
+- LibreOffice (required for general document conversions)
 - pip
-- Git (optional)
+
+LibreOffice must be available as `soffice` in PATH or installed in a standard Windows location, such as `C:\\Program Files\\LibreOffice\\program\\soffice.exe`.
 
 ## Installation
 
-Clone the repository and navigate to the project directory.
-
-Create a virtual environment:
-
-```bash
-python -m venv .venv
-```
-
-Activate it on Windows PowerShell:
-
 ```powershell
+python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-```
-
-Install FileX in editable mode:
-
-```bash
 python -m pip install -e .
-```
-
-Install development dependencies:
-
-```bash
 python -m pip install -r requirements-dev.txt
 ```
 
 ## Usage
 
-Display help:
-
-```bash
+```powershell
 filex --help
-```
-
-Display the version:
-
-```bash
-filex --version
-```
-
-Example conversion command (conversion implementation is not available yet):
-
-```bash
 filex --file report.docx --to pdf
+filex --file report.docx --to odt
+filex --file notes.odt --to rtf
+filex --file notes.txt --to docx
+filex --file report.pdf --to docx --mode editable
+filex --file report.pdf --to docx --mode visual
 ```
 
-## Development
+Use `--output` to specify the output file or `--output-dir` to specify its directory. FileX does not overwrite an existing output file.
 
-Run unit tests:
+## Tests
 
-```bash
+```powershell
 python -m pytest
 ```
 
-## Project Status
+## Notes
 
-FileX is currently under development.
-
-The initial stage focuses on CLI setup and project foundations. Conversion engines and supported format implementations will be added incrementally.
+- Conversion fidelity depends on the source file and LibreOffice filters. Complex layouts, fonts, tables, and embedded objects may change.
+- PDF import/export support depends on LibreOffice. PDF-to-DOCX uses the dedicated editable converter by default; `--mode visual` preserves page appearance by embedding page images, but the page content is not editable text.
+- FileX does not upload files to an online conversion service. Conversion is performed by locally installed software.

@@ -1,20 +1,58 @@
+# """Tests for input and format validation."""
+
+# import pytest
+
+# from filex.core.validation import validate_input, validate_target_format
+# from filex.exceptions import FileXError
+
+
+# @pytest.mark.parametrize("extension", ["png", "jpg", "docx", "pdf", "odt", "rtf", "txt"])
+# def test_validate_supported_input_formats(tmp_path, extension):
+#     path = tmp_path / f"sample.{extension}"
+#     path.write_bytes(b"test")
+#     assert validate_input(path) == extension
+
+
+# def test_reject_missing_file(tmp_path):
+#     with pytest.raises(FileXError, match="does not exist"):
+#         validate_input(tmp_path / "missing.png")
+
+
+# def test_reject_unsupported_input_format(tmp_path):
+#     path = tmp_path / "document.csv"
+#     path.write_bytes(b"test")
+#     with pytest.raises(FileXError, match="Unsupported input format"):
+#         validate_input(path)
+
+
+# def test_normalize_jpeg_target():
+#     assert validate_target_format("JPEG") == "jpg"
+
+
+# @pytest.mark.parametrize("extension", ["docx", "pdf", "odt", "rtf", "txt"])
+# def test_validate_supported_document_targets(extension):
+#     assert validate_target_format(extension.upper()) == extension
+
+
+# def test_reject_unsupported_target():
+#     with pytest.raises(FileXError, match="Unsupported target format"):
+#         validate_target_format("csv")
+
+
 
 """Tests for input and format validation."""
 
 import pytest
 
-from filex.core.validation import (
-    validate_input,
-    validate_target_format,
-)
+from filex.core.validation import validate_input, validate_target_format
 from filex.exceptions import FileXError
 
 
-def test_validate_existing_png(tmp_path):
-    image_path = tmp_path / "sample.png"
-    image_path.write_bytes(b"test")
-
-    assert validate_input(image_path) == "png"
+@pytest.mark.parametrize("extension", ["png", "jpg", "docx", "pdf", "odt", "rtf", "txt", "pptx", "xlsx", "ods"])
+def test_validate_supported_input_formats(tmp_path, extension):
+    path = tmp_path / f"sample.{extension}"
+    path.write_bytes(b"test")
+    assert validate_input(path) == extension
 
 
 def test_reject_missing_file(tmp_path):
@@ -23,9 +61,8 @@ def test_reject_missing_file(tmp_path):
 
 
 def test_reject_unsupported_input_format(tmp_path):
-    path = tmp_path / "document.txt"
+    path = tmp_path / "document.csv"
     path.write_bytes(b"test")
-
     with pytest.raises(FileXError, match="Unsupported input format"):
         validate_input(path)
 
@@ -34,17 +71,11 @@ def test_normalize_jpeg_target():
     assert validate_target_format("JPEG") == "jpg"
 
 
+@pytest.mark.parametrize("extension", ["docx", "pdf", "odt", "rtf", "txt", "pptx", "xlsx", "ods"])
+def test_validate_supported_document_targets(extension):
+    assert validate_target_format(extension.upper()) == extension
+
+
 def test_reject_unsupported_target():
     with pytest.raises(FileXError, match="Unsupported target format"):
-        validate_target_format("txt")
-
-
-def test_validate_docx_input(tmp_path):
-    path = tmp_path / "document.docx"
-    path.write_bytes(b"test")
-
-    assert validate_input(path) == "docx"
-
-
-def test_validate_pdf_target():
-    assert validate_target_format("PDF") == "pdf"
+        validate_target_format("csv")
